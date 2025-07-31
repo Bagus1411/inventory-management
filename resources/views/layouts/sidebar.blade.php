@@ -14,15 +14,15 @@
                             <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
                                 href="/">
                                 <i data-feather="file-text"></i>
-                                Dashboard
+                                Home
                             </a>
                         </li>
                     </ul>
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
-                                href="/viewaction/create">
-                                <i data-feather="file-text"></i>
+                                href="{{ route('itemin.index') }}">
+                                <i data-feather="check"></i>
                                 Incoming Item
                             </a>
                         </li>
@@ -30,8 +30,8 @@
                     <ul class="nav flex-column">
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center gap-2 active" aria-current="page"
-                                href="/viewaction/edit">
-                                <i data-feather="file-text"></i>
+                                href="/action/itemout">
+                                <i data-feather="x-octagon"></i>
                                 Outgoing Item
                             </a>
                         </li>

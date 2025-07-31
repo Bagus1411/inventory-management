@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IncomingTransactionController;
+use App\Http\Controllers\OutgoingTransactionController;
 
 Route::get('/', function () {
     return view('index',[
@@ -10,15 +12,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/viewaction/create', function () {
-    return view('viewaction.create', [
-        'title' => 'create',
-        'active' => 'create'
-    ]);
-});
-Route::get('/viewaction/edit', function () {
-    return view('viewaction.edit', [
-        'title' => 'edit',
-        'active' => 'edit'
-    ]);
-});
+Route::resource('/action/itemin', IncomingTransactionController::class);
+
+Route::resource('/action/itemout', OutgoingTransactionController::class);
+
