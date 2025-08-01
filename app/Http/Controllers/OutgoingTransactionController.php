@@ -12,9 +12,8 @@ class OutgoingTransactionController extends Controller
      */
     public function index()
     {
-        return view('inout.out.index', [
-            'title' => 'ItemOut',
-            'active' => 'ItemOut'
+        return view('action.itemout.index', [
+            'title' => 'Outgoing Transaction'
         ]);
     }
 
@@ -23,7 +22,9 @@ class OutgoingTransactionController extends Controller
      */
     public function create()
     {
-        //
+        return view('action.itemout.create', [
+            'title' => 'Outgoing Transaction'
+        ]);
     }
 
     /**
@@ -47,7 +48,9 @@ class OutgoingTransactionController extends Controller
      */
     public function edit(OutgoingTransaction $outgoingTransaction)
     {
-        //
+        return view('action.itemout.edit', [
+            'title' => 'Outgoing Transaction'
+        ]);
     }
 
     /**
