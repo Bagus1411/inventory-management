@@ -12,7 +12,10 @@ class IncomingTransactionController extends Controller
      */
     public function index()
     {
-        //
+        return view('inout.in.index', [
+            'title' => 'ItemIn',
+            'active' => 'ItemIn'
+        ]);
     }
 
     /**
