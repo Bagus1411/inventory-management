@@ -22,25 +22,29 @@
 
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <a href="/master/category" class="btn btn-outline-danger border-0 d-inline-flex align-items-center"> 
+                            <a href="/master/category"
+                                class="btn btn-outline-danger border-0 d-inline-flex align-items-center">
                                 <i data-feather="chevrons-left" class="me-1" style="width:15px; height:15px;"></i> Cancel
                             </a>
-                            <button type="submit" class="btn btn-outline-primary border-0 d-inline-flex align-items-center">
-                                <i data-feather="corner-down-right" class="me-1" style="width:15px; height:15px;"></i> Edit Category
+                            <button type="submit"
+                                class="btn btn-outline-primary border-0 d-inline-flex align-items-center">
+                                <i data-feather="corner-down-right" class="me-1" style="width:15px; height:15px;"></i>
+                                Edit Category
                             </button>
                         </div>
+                        
+                </form>
 
-                        <form action="{{ route('category.destroy', $category->id) }}" method="POST" class="d-inline">
-                            @method('delete')
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger border-0"
-                                onclick="return confirm('Are you sure want to delete this Category?')">
-                                <i data-feather="trash-2"></i>
-                            </button>
-                        </form>
-                    </div>
+                <form action="{{ route('category.destroy', $category->id) }}" method="POST" class="d-inline">
+                    @method('delete')
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger border-0"
+                        onclick="return confirm('Are you sure want to delete this Category?')">
+                        <i data-feather="trash-2"></i>
+                    </button>
                 </form>
             </div>
         </div>
+    </div>
     </div>
 @endsection
