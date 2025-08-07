@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class IncomingTransaction extends Model
 {
-    protected $fillable = [
-        'items_id',
-        'users_id',
-        'category_id',
-        'quantity',
-        'date'
+
+      protected $table = 'incoming_transaction'; // <--- ini penting
+    
+    protected $guarded = [
+        'id',
+        'created_at',
+        'updated_at'
     ];
 
     public function item()

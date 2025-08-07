@@ -8,13 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class OutgoingTransaction extends Model
 {
-    protected $fillable = [
-        'items_id',
-        'users_id',
-        'category_id',
-        'quantity',
-        'date'
-    ];
+
+          protected $table = 'outgoing_transaction'; // <--- ini penting
+
+          protected $guarded = ['id'];
 
     public function item()
     {

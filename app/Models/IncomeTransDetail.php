@@ -11,6 +11,9 @@ class IncomeTransDetail extends Model
         'id'
     ];
 
+    protected $table = 'incoming_transaction_detail';
+
+
     public function item()
     {
         return $this->belongsTo(Item::class);

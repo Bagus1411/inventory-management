@@ -23,7 +23,7 @@
                         <i data-feather="chevrons-left" class="me-1" style="width:15px; height:15px;"></i> Cancel
                     </a>
                     <button type="submit" class="btn btn-outline-primary border-0 d-inline-flex align-items-center">
-                        <i data-feather="corner-down-right" class="me-1" style="width:15px; height:15px;"></i> Edit Category
+                        <i data-feather="corner-down-right" class="me-1" style="width:15px; height:15px;"></i> Create Category
                     </button>
                 </form>
             </div>

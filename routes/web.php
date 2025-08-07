@@ -31,7 +31,7 @@ Route::resource('/master/category', CategoryController::class);
 
 // <!-- In and Out -->
 // Item In
-Route::resource('/inout/in', controller: IncomingTransactionController::class);
+// Route::resource('/inout/in', controller: IncomingTransactionController::class);
 // Item Out
-Route::resource('/inout/out', OutgoingTransactionController::class);
+// Route::resource('/inout/out', OutgoingTransactionController::class);
 

@@ -11,6 +11,10 @@ class OutgoingTransDetail extends Model
     protected $guarded = [
         'id'
     ];
+
+    protected $table = 'outgoing_transaction_detail';
+
+
     public function item()
     {
         return $this->belongsTo(Item::class);

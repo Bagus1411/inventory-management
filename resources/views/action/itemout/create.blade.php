@@ -2,45 +2,40 @@
 
 @section('content')
     <div class="container">
-        {{-- Judul Halaman --}}
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 class="h2">Add Item Stock</h1>
+            <h1 class="h2">Add Outgoing Item Stock</h1>
         </div>
 
-        {{-- 🔹 FORM HEADER --}}
-        {{-- 🔹 FORM HEADER --}}
-        <form id="form-header" class="mb-4">
+        {{-- 🔹 FORM HEADER & DETAIL --}}
+        <form action="{{ route('itemout.store') }}" method="POST" id="form-create">
             @csrf
-            <div class="card shadow-sm">
+
+            {{-- Header --}}
+            <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">General Information</h5>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
                         <div class="col-md-4">
-                            <label for="kode" class="form-label">Code</label>
-                            <input type="text" class="form-control" id="kode" name="kode"
-                                placeholder="Input Code">
+                            <label for="code" class="form-label">Code</label>
+                            <input type="text" class="form-control" id="code" name="code"
+                                placeholder="Input Code" required>
                         </div>
                         <div class="col-md-4">
-                            <label for="tanggal" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="tanggal" name="tanggal"
-                                placeholder="Select Date">
+                            <label for="date" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
                         </div>
                         <div class="col-md-4">
-                            <label for="keterangan" class="form-label">Description</label>
-                            <input type="text" class="form-control" id="keterangan" name="keterangan"
-                                placeholder="Input Description">
+                            <label for="note" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="note" name="note"
+                                placeholder="Input Note">
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
 
-
-        {{-- 🔹 FORM DETAIL --}}
-        <form id="form-detail">
-            @csrf
+            {{-- Detail --}}
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">Item Detail</h5>
@@ -51,49 +46,31 @@
                             <thead class="table-light text-center">
                                 <tr>
                                     <th>Item</th>
-                                    <th>Category</th>
                                     <th>Quantity</th>
                                     <th>Notes</th>
-                                    <th>Status</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <select name="" id="" class="form-control">
-                                            <option value="" selected hidden disabled>Select Item</option>
-                                            <option value="ijanwd">anjay</option>
-                                            <option value="kwjev">awd</option>
-                                            <option value="awdawd">anawdawdjay</option>
+                                    <tr data-index="">
+                                        <td>
+                                            <input type="hidden" name="created_by" value="Admin">
+                                            <select name="items[][item_id]" class="form-control" required>
+                                                <option value="" selected hidden disabled>Select Item</option>
+                                            @foreach ($items as $item)
+                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                            @endforeach
                                         </select>
                                     </td>
-                                    <td>
-                                        <select name="" id="" class="form-control">
-                                            <option value="" selected hidden disabled>Select Category</option>
-                                            <option value="ijanwd">anjay</option>
-                                            <option value="kwjev">awd</option>
-                                            <option value="awdawd">anawdawdjay</option>
-                                        </select>
-                                    </td>
-                                    <td><input type="number" name="kuantitas[]" class="form-control" required
-                                            placeholder="Input Quantity"></td>
-                                    <td><input type="text" name="catatan[]" class="form-control" required
-                                            placeholder="Input Notes"></td>
-                                    <td>
-                                        <select name="" id="" class="form-control">
-                                            <option value="" selected hidden disabled>Select Status</option>
-                                            <option value="pending">Pending</option>
-                                            <option value="paid">Paid</option>
-                                            <option value="cancelled">Cancelled</option>
-                                        </select>
-                                    </td>
+                                    <td><input type="number" name="items[0][quantity]" class="form-control" required></td>
+                                    <td><input type="text" name="items[0][note]" class="form-control"></td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-sm btn-danger delete-row">
                                             <i data-feather="trash-2"></i>
                                         </button>
                                     </td>
                                 </tr>
+
                             </tbody>
                         </table>
                         <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-row">
@@ -102,10 +79,11 @@
                     </div>
                 </div>
             </div>
+
+            {{-- Tombol --}}
             <div class="mt-4 d-flex gap-2 mb-4">
-                <button type="submit" class="btn btn-primary" form="form-detail">Create</button>
-                <button type="button" class="btn btn-danger">Delete</button>
-                <a href="{{ route('itemin.index') }}" class="btn btn-secondary">Back To Index</a>
+                <button type="submit" class="btn btn-primary">Create</button>
+                <a href="{{ route('itemout.index') }}" class="btn btn-secondary">Back To Index</a>
             </div>
         </form>
     </div>
@@ -113,49 +91,38 @@
 
 @section('scripts')
     <script>
+        let rowIndex = 1;
+
         document.addEventListener('DOMContentLoaded', function() {
-            // Tombol tambah baris
+
             document.getElementById('add-row').addEventListener('click', function() {
                 const tbody = document.querySelector('#detail-table tbody');
                 const newRow = document.createElement('tr');
+                newRow.setAttribute('data-index', rowIndex);
                 newRow.innerHTML = `
-                    <td>
-                        <select name="" id="" class="form-control">
-                                <option value="" selected hidden disabled>Select Item</option>
-                                <option value="ijanwd">anjay</option>
-                                <option value="kwjev">awd</option>
-                                <option value="awdawd">anawdawdjay</option>
-                        </select>
-                    </td>
-                    <td>
-                        <select name="" id="" class="form-control">
-                                <option value="" selected hidden disabled>Select Category</option>
-                                <option value="ijanwd">anjay</option>
-                                <option value="kwjev">awd</option>
-                                <option value="awdawd">anawdawdjay</option>
-                        </select>
-                    </td>
-                    <td><input type="number" name="kuantitas[]" class="form-control" required placeholder="Input Quantity"></td>
-                    <td><input type="text" name="catatan[]" class="form-control" required placeholder="Input Notes"></td>
-                    <td>
-                        <select name="" id="" class="form-control">
-                            <option value="" selected hidden disabled>Select Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="paid">Paid</option>
-                            <option value="cancelled">Cancelled</option>
-                        </select>
-                    </td>
-                    <td class="text-center">
-                        <button type="button" class="btn btn-sm btn-danger delete-row">
-                            <i data-feather="trash-2"></i>
-                        </button>
-                    </td>
-                `;
+        <td>
+            <select name="items[${rowIndex}][item_id]" class="form-control" required>
+                <option value="" selected hidden disabled>Select Item</option>
+                @foreach ($items as $item)
+                    <option value="{{ $item->id }}">{{ $item->name }}</option>
+                @endforeach
+            </select>
+        </td>
+        <td><input type="number" name="items[${rowIndex}][quantity]" class="form-control" required></td>
+        <td><input type="text" name="items[${rowIndex}][note]" class="form-control"></td>
+        <td class="text-center">
+            <button type="button" class="btn btn-sm btn-danger delete-row">
+                <i data-feather="trash-2"></i>
+            </button>
+        </td>
+    `;
                 tbody.appendChild(newRow);
-                feather.replace(); // refresh feather icon
+                feather.replace();
+                rowIndex++;
             });
 
-            // Tombol hapus baris
+
+            // Delete row
             document.querySelector('#detail-table').addEventListener('click', function(e) {
                 if (e.target.closest('.delete-row')) {
                     const row = e.target.closest('tr');

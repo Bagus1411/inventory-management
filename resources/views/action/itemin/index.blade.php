@@ -9,6 +9,18 @@
             </a>
         </div>
 
+        @if (session()->has('success'))
+            <div class="alert alert-success mt-4">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session()->has('danger'))
+            <div class="alert alert-danger mt-4">
+                {{ session('danger') }}
+            </div>
+        @endif
+
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover table-bordered table-sm align-middle py-3" id="example">
@@ -20,15 +32,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for ($i = 1; $i <= 10; $i++)
+                        @foreach ($incoming as $item)
                             <tr class="text-center">
-                                <td> <a class="text-decoration-none" href="{{ route('itemin.edit', ['itemin' => $i]) }}">
-                                        ITM{{ str_pad($i, 4, '0', STR_PAD_LEFT) }}
-                                    </a></td>
-                                <td>{{ rand(1, 100) }}</td>
-                                <td>Description example {{ $i }}</td>
+                                <td> <a href="{{ route('itemin.edit', $item->id) }}">{{ $item->code }}</a> </td>
+                                <td>{{ $item->date }}</td>
+                                <td>{{ $item->note }}</td>
                             </tr>
-                        @endfor
+                        @endforeach
                     </tbody>
                 </table>
             </div>

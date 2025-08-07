@@ -52,7 +52,7 @@
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-2 rounded
                             {{ Request::is('inout/in') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
-                        href="/inout/in">
+                        href="/action/itemin">
                         <i data-feather="download" class="opacity-75"></i>
                         Item In
                     </a>
@@ -62,7 +62,7 @@
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-2 rounded
                             {{ Request::is('inout/out') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
-                        href="/inout/out">
+                        href="/action/itemout">
                         <i data-feather="upload" class="opacity-75"></i>
                         Item Out
                     </a>
