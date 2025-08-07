@@ -37,10 +37,10 @@
                                 <option selected disabled value="" hidden>Choose Category</option>
                                 @foreach ($categories as $category)
                                     {{-- @if (old('category_id', $items->category_id) == $category->id)
-                                <option value="{{ $category->id }}" selected>{{ $category->name }}</option>
-                            @else
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
-                            @endif --}}
+                                            <option value="{{ $category->id }}" selected>{{ $category->name }}</option>
+                                        @else
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endif --}}
                                     <option value="{{ $category->id }}" @selected(old('category_id', $items->category_id) == $category->id)>
                                         {{ $category->name }}
                                     </option>
@@ -64,25 +64,30 @@
 
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
-                            <a href="/master/items" class="btn btn-outline-danger border-0 d-inline-flex align-items-center"> 
+                            <a href="/master/items"
+                                class="btn btn-outline-danger border-0 d-inline-flex align-items-center">
                                 <i data-feather="chevrons-left" class="me-1" style="width:15px; height:15px;"></i> Cancel
                             </a>
-                            <button type="submit" class="btn btn-outline-primary border-0 d-inline-flex align-items-center">
-                                <i data-feather="corner-down-right" class="me-1" style="width:15px; height:15px;"></i> Edit Item
+                            <button type="submit"
+                                class="btn btn-outline-primary border-0 d-inline-flex align-items-center">
+                                <i data-feather="corner-down-right" class="me-1" style="width:15px; height:15px;"></i>
+                                Edit Item
                             </button>
                         </div>
 
-                        <form action="{{ route('items.destroy', $items->id) }}" method="POST" class="d-inline">
-                            @method('delete')
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger border-0"
-                                onclick="return confirm('Are you sure want to delete this Item?')">
-                                <i data-feather="trash-2"></i>
-                            </button>
-                        </form>
-                    </div>
+                </form>
+
+                <!-- Form Delete (tetap di dalam card, tapi DI LUAR form edit) -->
+                <form action="{{ route('items.destroy', $items->id) }}" method="POST" class="d-inline">
+                    @method('delete')
+                    @csrf
+                    <button type="submit" class="btn btn-outline-danger border-0"
+                        onclick="return confirm('Are you sure want to delete this Item?')">
+                        <i data-feather="trash-2"></i>
+                    </button>
                 </form>
             </div>
         </div>
+    </div>
     </div>
 @endsection
