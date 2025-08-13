@@ -9,8 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 class IncomingTransaction extends Model
 {
 
-      protected $table = 'incoming_transaction'; // <--- ini penting
-    
+    protected $table = 'incoming_transaction'; // <--- ini penting
+
     protected $guarded = [
         'id',
         'created_at',

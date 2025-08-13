@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
@@ -12,7 +13,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        return view('master.category.index',[
+        return view('master.category.index', [
             'title' => 'Category',
             'active' => 'Category',
             'categories' => Category::all()
@@ -24,7 +25,7 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('master.category.create',[
+        return view('master.category.create', [
             'title' => 'Create New Category'
         ]);
     }
@@ -32,16 +33,16 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validatedCategory = $request->validate([
-            'category' => 'required|min:3'
-        ]);
+        // $validatedCategory = $request->validate([
+        //     'category' => 'required|min:3'
+        // ]);
 
-        $validatedCategory['name'] = $validatedCategory['category'];
-        unset($validatedCategory['category']);
+        // $validatedCategory['name'] = $validatedCategory['category'];
+        // unset($validatedCategory['category']);
 
-        Category::create($validatedCategory);
+        Category::create($request->validated());
 
         return redirect()->route('category.index')->with('success', 'Category Created Sucessfully!');
     }
@@ -68,16 +69,16 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
 
         // dd($request);
 
-        $validated = $request->validate([
-            'name' => 'required'
-        ]);
+        // $validated = $request->validate([
+        //     'name' => 'required|min:3'
+        // ]);
 
-        $category->update($validated);
+        $category->update($request->validated());
 
         return redirect()->route('category.index')->with('success', 'Category Edited Successfully!');
     }
@@ -85,7 +86,7 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Category $category )
+    public function destroy(Category $category)
     {
         $category->destroy($category->id);
 

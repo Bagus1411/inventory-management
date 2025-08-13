@@ -8,7 +8,8 @@
         </div>
 
         {{-- 🔹 FORM HEADER --}}
-        {{-- 🔹 FORM HEADER --}}
+        <!-- @dump(old())
+        @dump(old('items')) -->
         <form id="form-detail" class="mt-4" action="{{ route('itemin.update', $incomingtransaction->id) }}" method="POST">
             @csrf
             @method('PUT')
@@ -73,35 +74,73 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($details as $index => $detail)
-                                    <tr>
-                                        <td>
-                                            <input type="hidden" name="created_by" value="Admin">
-                                            <select name="items[{{ $index }}][item_id]" class="form-control"
-                                                required>
-                                                <option disabled hidden>Select Item</option>
-                                                @foreach ($items as $item)
-                                                    <option value="{{ $item->id }}"
-                                                        {{ $item->id == $detail->item_id ? 'selected' : '' }}>
-                                                        {{ $item->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <input type="number" name="items[{{ $index }}][quantity]"
-                                                class="form-control" value="{{ $detail->quantity }}" required>
-                                        </td>
-                                        <td>
-                                            <input type="text" name="items[{{ $index }}][note]"
-                                                class="form-control" value="{{ $detail->note }}">
-                                        </td>
-                                        <td class="text-center">
-                                            <button type="button" class="btn btn-sm btn-danger delete-row"><i
-                                                    data-feather="trash-2"></i></button>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                @if (!empty(old('items')))
+                                    @foreach (old('items') as $index => $value)
+                                        <!-- @dump($value) -->
+                                        <tr>
+                                            <td>
+                                                <input type="hidden" name="created_by" value="Admin">
+                                                <select name="items[{{ $index }}][item_id]" class="form-control"
+                                                    required>
+                                                    <option disabled hidden>Select Item</option>
+                                                    @foreach ($items as $item)
+                                                        <option value="{{ $item->id }}" @selected($item->id == $value['item_id'])
+                                                            {{ $item->id == $value['item_id'] ? 'selected' : '' }}>
+                                                            {{ $item->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" name="items[{{ $index }}][quantity]"
+                                                    class="form-control" value="{{ old('items.' . $index . '.quantity') }}"
+                                                    required>
+                                            </td>
+                                            <td>
+                                                <input type="text" name="items[{{ $index }}][note]"
+                                                    class="form-control" value="{{ old('items.' . $index . '.note') }}">
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-danger delete-row"><i
+                                                        data-feather="trash-2"></i></button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    @foreach ($details as $index => $detail)
+                                        <tr>
+                                            <td>
+                                                <input type="hidden" name="created_by" value="Admin">
+                                                <select name="items[{{ $index }}][item_id]" class="form-control"
+                                                    required>
+                                                    <option disabled hidden>Select Item</option>
+                                                    @foreach ($items as $item)
+                                                        <option value="{{ $item->id }}" @selected($item->id == $detail['item_id'])
+                                                            {{ $item->id == $detail['item_id'] ? 'selected' : '' }}>
+                                                            {{ $item->name }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <input type="number" placeholder="Input Quantity"
+                                                    name="items[{{ $index }}][quantity]" class="form-control"
+                                                    value="{{ old('items.' . $index . '.quantity', $detail->quantity) }}"
+                                                    required>
+                                            </td>
+                                            <td>
+                                                <input type="text" placeholder="Input Note"
+                                                    name="items[{{ $index }}][note]" class="form-control"
+                                                    value="{{ old('items.' . $index . '.note', $detail->note) }}">
+                                            </td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-danger delete-row"><i
+                                                        data-feather="trash-2"></i></button>
+                                            </td>
+                                        </tr>
+                                        @endforeach
+                                    @endif
+
                             </tbody>
 
                         </table>
@@ -135,7 +174,8 @@
         <!-- Button trigger modal -->
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

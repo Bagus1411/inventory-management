@@ -21,8 +21,7 @@
                         <div class="col-md-4">
                             <label for="code" class="form-label">Code</label>
                             <input type="text" class="form-control  @error('code')is-invalid @enderror" id="code"
-                                name="code" placeholder="Input Code"
-                                value="{{ old('code', $outgoing->code) }}">
+                                name="code" placeholder="Input Code" value="{{ old('code', $outgoing->code) }}">
                             @error('code')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -32,8 +31,7 @@
                         <div class="col-md-4">
                             <label for="date" class="form-label">Date</label>
                             <input type="date" class="form-control  @error('date')is-invalid @enderror" id="date"
-                                name="date" placeholder="Select Date"
-                                value="{{ old('date', $outgoing->date) }}">
+                                name="date" placeholder="Select Date" value="{{ old('date', $outgoing->date) }}">
                             @error('date')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -43,8 +41,7 @@
                         <div class="col-md-4">
                             <label for="note" class="form-label">Description</label>
                             <input type="text" class="form-control  @error('note')is-invalid @enderror" id="note"
-                                name="note" placeholder="Input note"
-                                value="{{ old('note', $outgoing->note) }}">
+                                name="note" placeholder="Input note" value="{{ old('note', $outgoing->note) }}">
                             @error('note')
                                 <div class="invalid-feedback">
                                     {{ $message }}
@@ -90,7 +87,12 @@
                                         </td>
                                         <td>
                                             <input type="number" name="items[{{ $index }}][quantity]"
-                                                class="form-control" value="{{ $detail->quantity }}" required>
+                                                class="form-control @error("items.$index.quantity") is-invalid @enderror"
+                                                value="{{ $detail->quantity }}"
+                                                required>
+                                            @error("items.$index.quantity")
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
                                         </td>
                                         <td>
                                             <input type="text" name="items[{{ $index }}][note]"
@@ -147,8 +149,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <form action="{{ route('itemout.destroy', $outgoing->id) }}" method="POST"
-                            class="">
+                        <form action="{{ route('itemout.destroy', $outgoing->id) }}" method="POST" class="">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger">DELETE LA BANGGGGGGGG!!!!!!!!!!</button>
@@ -166,41 +167,61 @@
         let rowIndex = {{ count($details) }};
 
         document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.querySelector('#detail-table tbody');
+
+            function toggleDeleteButtons() {
+                const deleteButtons = tableBody.querySelectorAll('.delete-row');
+                if (deleteButtons.length <= 1) {
+                    deleteButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('disabled');
+                    });
+                } else {
+                    deleteButtons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('disabled');
+                    });
+                }
+            }
+
+            // Initial check saat page load
+            toggleDeleteButtons();
+
             // Tombol tambah baris
             document.getElementById('add-row').addEventListener('click', function() {
-                const tbody = document.querySelector('#detail-table tbody');
                 const newRow = document.createElement('tr');
                 newRow.innerHTML = `
-        <td>
-            <input type="hidden" name="created_by" value="Admin">
-            <select name="items[${rowIndex}][item_id]" class="form-control" required>
-                <option hidden disabled selected>Select Item</option>
-                @foreach ($items as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                @endforeach
-            </select>
-        </td>
-        <td>
-            <input type="number" name="items[${rowIndex}][quantity]" class="form-control" placeholder="Input Quantity" required>
-        </td>
-        <td>
-            <input type="text" name="items[${rowIndex}][note]" class="form-control" placeholder="Input Notes">
-        </td>
-        <td class="text-center">
-            <button type="button" class="btn btn-sm btn-danger delete-row"><i data-feather="trash-2"></i></button>
-        </td>
-    `;
-                tbody.appendChild(newRow);
+                <td>
+                    <input type="hidden" name="created_by" value="Admin">
+                    <select name="items[${rowIndex}][item_id]" class="form-control" required>
+                        <option hidden disabled selected>Select Item</option>
+                        @foreach ($items as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                        @endforeach
+                    </select>
+                </td>
+                <td>
+                    <input type="number" name="items[${rowIndex}][quantity]" class="form-control" placeholder="Input Quantity" required>
+                </td>
+                <td>
+                    <input type="text" name="items[${rowIndex}][note]" class="form-control" placeholder="Input Notes">
+                </td>
+                <td class="text-center">
+                    <button type="button" class="btn btn-sm btn-danger delete-row"><i data-feather="trash-2"></i></button>
+                </td>
+            `;
+                tableBody.appendChild(newRow);
                 feather.replace();
                 rowIndex++;
+                toggleDeleteButtons();
             });
 
-
             // Tombol hapus baris
-            document.querySelector('#detail-table').addEventListener('click', function(e) {
+            tableBody.addEventListener('click', function(e) {
                 if (e.target.closest('.delete-row')) {
                     const row = e.target.closest('tr');
                     row.remove();
+                    toggleDeleteButtons();
                 }
             });
         });

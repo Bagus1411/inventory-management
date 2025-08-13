@@ -5,6 +5,7 @@ use App\Models\Item;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use App\Http\Requests\ItemRequest;
 
 class ItemController extends Controller
 {
@@ -35,23 +36,19 @@ class ItemController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ItemRequest $request)
     {   
 
-        $validatedItem = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'required',
-            'quantity' => 'required|integer|min:1'
-        ]);
+        // $validatedItem = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'category_id' => 'required|exists:categories,id',
+        //     'description' => 'required',
+        //     'quantity' => 'required|integer|min:1'
+        // ]);
 
         // dd($validatedItem);
 
-        // Mapping 'quantity' ke 'stock'
-        $validatedItem['stock'] = $validatedItem['quantity'];
-        unset($validatedItem['quantity']); // Hapus field quantity agar tidak error
-
-        Item::create($validatedItem);
+        Item::create($request->validated());
 
         return redirect()->route('items.index')->with('success', 'Item Created Succesfully!');
     }
@@ -79,19 +76,19 @@ class ItemController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Item $item)
+    public function update(ItemRequest $request, Item $item)
     {
 
         // dd($request);
 
-        $validatedItems = $request->validate([
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'required',
-            'stock' => 'required|integer|min:1'
-        ]);
+        // $validatedItems = $request->validate([
+        //     'name' => 'required|string|max:255',
+        //     'category_id' => 'required|exists:categories,id',
+        //     'description' => 'required',
+        //     'stock' => 'required|integer|min:1'
+        // ]);
 
-        $item->update($validatedItems);
+        $item->update($request->validated());
 
         return redirect()->route('items.index')->with('success', 'Item Edited Succesfully!');
     }

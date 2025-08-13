@@ -19,17 +19,44 @@
                     <div class="row g-3">
                         <div class="col-md-4">
                             <label for="code" class="form-label">Code</label>
-                            <input type="text" class="form-control" id="code" name="code"
-                                placeholder="Input Code" required>
+                            <input type="text"
+                                class="form-control @error('code')
+                                is-invalid
+                            @enderror"
+                                id="code" name="code" placeholder="Input Code" required
+                                value="{{ old('code', $incum->code) }}">
+                            @error('code')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="date" class="form-label">Date</label>
-                            <input type="date" class="form-control" id="date" name="date" required>
+                            <input type="date"
+                                class="form-control @error('date')
+                                is-invalid
+                            @enderror"
+                                id="date" name="date" required value="{{ old('date', $incum->date) }}">
+                            @error('date')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                         <div class="col-md-4">
                             <label for="note" class="form-label">Description</label>
-                            <input type="text" class="form-control" id="note" name="note"
-                                placeholder="Input Note">
+                            <input type="text"
+                                class="form-control @error('note')
+                                is-invalid
+                            @enderror"
+                                id="note" name="note" placeholder="Input Note"
+                                value="{{ old('note', $incum->note ?? '') }}">
+                            @error('note')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -52,24 +79,76 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr data-index="0">
+                                @if (!empty(old('items')))
+                                    @foreach (old('items') as $tuwir)
+                                        <tr data-index="0">
+                                            <td>
+                                                <input type="hidden" name="created_by" value="Admin">
+                                                <select name="items[0][item_id]" class="form-control" required>
+                                                    <option selected hidden disabled>Select Item</option>
+                                                    @foreach ($items as $item)
+                                                        <option value="{{ $item->id }}" @selected($item->id == $tuwir['item_id'])>
+                                                            {{ $item->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td><input type="number" placeholder="Input Quantity" name="items[0][quantity]" class="form-control"
+                                                    required value="{{ old('items.0.quantity', $items[0]->quantity) }}">
+                                            </td>
+                                            <td><input type="text" placeholder="Input Note" name="items[0][note]" class="form-control"
+                                                    value="{{ old('items.0.note', $items[0]->note ?? '') }}"></td>
+                                            <td class="text-center">
+                                                <button type="button" class="btn btn-sm btn-danger delete-row">
+                                                    <i data-feather="trash-2"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @else
+                                    <tr data-index="0">
+                                        <td>
+                                            <input type="hidden" name="created_by" value="Admin">
+                                            <select name="items[0][item_id]" class="form-control" required>
+                                                <option selected hidden disabled>Select Item</option>
+                                                @foreach ($items as $item)
+                                                    <option value="{{ $item->id }}">
+                                                        {{ $item->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                        <td><input type="number" placeholder="Input Quantity" name="items[0][quantity]" class="form-control" required
+                                                value="{{ old('items.0.quantity', $items[0]->quantity) }}">
+                                        </td>
+                                        <td><input type="text" placeholder="Input Notes" name="items[0][note]" class="form-control"
+                                                value="{{ old('items.0.note', $items[0]->note ?? '') }}"></td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-sm btn-danger delete-row">
+                                                <i data-feather="trash-2"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endif
+                                <!-- {{-- <tr data-index="0">
                                     <td>
                                         <input type="hidden" name="created_by" value="Admin">
                                         <select name="items[0][item_id]" class="form-control" required>
-                                            <option value="" selected hidden disabled>Select Item</option>
+                                            <option selected hidden disabled>Select Item</option>
                                             @foreach ($items as $item)
-                                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                                <option value="{{ $item->id }}">
+                                                    {{ $item->name }}</option>
                                             @endforeach
                                         </select>
                                     </td>
-                                    <td><input type="number" name="items[0][quantity]" class="form-control" required></td>
-                                    <td><input type="text" name="items[0][note]" class="form-control"></td>
+                                    <td><input type="number" name="items[0][quantity]" class="form-control" required
+                                            value="{{ old('items.0.quantity', $items[0]->quantity) }}"></td>
+                                    <td><input type="text" name="items[0][note]" class="form-control"
+                                            value="{{ old('items.0.note', $items[0]->note ?? '') }}"></td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-sm btn-danger delete-row">
                                             <i data-feather="trash-2"></i>
                                         </button>
                                     </td>
-                                </tr>
+                                </tr> --}} -->
 
                             </tbody>
                         </table>
@@ -92,16 +171,8 @@
 @section('scripts')
     <script>
         let rowIndex = 1;
-        const myModal = document.getElementById('myModal')
-        const myInput = document.getElementById('myInput')
-
-        myModal.addEventListener('shown.bs.modal', () => {
-            myInput.focus()
-        })
 
         document.addEventListener('DOMContentLoaded', function() {
-
-
 
             document.getElementById('add-row').addEventListener('click', function() {
                 const tbody = document.querySelector('#detail-table tbody');
@@ -116,8 +187,8 @@
                 @endforeach
             </select>
         </td>
-        <td><input type="number" name="items[${rowIndex}][quantity]" class="form-control" required></td>
-        <td><input type="text" name="items[${rowIndex}][note]" class="form-control"></td>
+        <td><input type="number"  placeholder="Input quantity" name="items[${rowIndex}][quantity]" class="form-control" required></td>
+        <td><input type="text"  placeholder="Input Note" name="items[${rowIndex}][note]" class="form-control"></td>
         <td class="text-center">
             <button type="button" class="btn btn-sm btn-danger delete-row">
                 <i data-feather="trash-2"></i>

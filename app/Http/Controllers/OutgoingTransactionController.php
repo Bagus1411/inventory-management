@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ItemoutRequest;
 use App\Models\OutgoingTransaction;
 use App\Models\Item;
 use App\Models\Category;
@@ -35,20 +36,22 @@ class OutgoingTransactionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ItemoutRequest $request)
     {
         // Validasi input utama
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:outgoing_transaction,code',
-            'note' => 'nullable|string|max:255',
-            'date' => 'required|date',
-            'items' => 'required|array|min:1',
-            'created_by' => 'required|string|max:255',
-            'items.*.item_id' => 'required|exists:items,id',
-            // 'items.*.category_id' => 'required|exists:categories,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.note' => 'nullable|string|max:255',
-        ]);
+        // $validated = $request->validate([
+        //     'code' => 'required|string|max:255|unique:outgoing_transaction,code',
+        //     'note' => 'nullable|string|max:255',
+        //     'date' => 'required|date',
+        //     'items' => 'required|array|min:1',
+        //     'created_by' => 'required|string|max:255',
+        //     'items.*.item_id' => 'required|exists:items,id',
+        //     // 'items.*.category_id' => 'required|exists:categories,id',
+        //     'items.*.quantity' => 'required|integer|min:1',
+        //     'items.*.note' => 'nullable|string|max:255',
+        // ]);
+
+        $validated = $request->validated();
 
         // return $validated;
 
@@ -100,82 +103,84 @@ class OutgoingTransactionController extends Controller
             'outgoing' => $itemout,
             'details' => $itemout->details,
             'items' => Item::all(),
-            'categories' => Category::all(),    
+            'categories' => Category::all(),
         ]);
-    }
+    }   
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, OutgoingTransaction $itemout)
-{
-    // 🔐 VALIDASI INPUT
-    $validated = $request->validate([
-        'code' => 'required|string|max:255|unique:outgoing_transaction,code,' . $itemout->id,
-        'note' => 'nullable|string|max:255',
-        'date' => 'required|date',
-        'created_by' => 'required|string|max:255',
-        'items' => 'nullable|array',
-        'items.*.item_id' => 'required_with:items.*|exists:items,id',
-        'items.*.quantity' => 'required_with:items.*|integer|min:1',
-        'items.*.note' => 'nullable|string|max:255',
-    ]);
+    public function update(ItemoutRequest $request, OutgoingTransaction $itemout)
+    {
+        // 🔐 VALIDASI INPUT
+        // $validated = $request->validate([
+        //     'code' => 'required|string|max:255|unique:outgoing_transaction,code,' . $itemout->id,
+        //     'note' => 'nullable|string|max:255',
+        //     'date' => 'required|date',
+        //     'created_by' => 'required|string|max:255',
+        //     'items' => 'nullable|array',
+        //     'items.*.item_id' => 'required_with:items.*|exists:items,id',
+        //     'items.*.quantity' => 'required_with:items.*|integer|min:1',
+        //     'items.*.note' => 'nullable|string|max:255',
+        // ]);
 
-    // 🔁 STEP 1: Kembalikan stok lama (ROLLBACK)
-    foreach ($itemout->details as $oldDetail) {
-        $item = Item::find($oldDetail->item_id);
-        if ($item) {
-            $item->stock += $oldDetail->quantity;
-            $item->save();
-        }
-    }
+        $validated = $request->validated();
 
-    // 🔒 STEP 2: Validasi stok cukup untuk data baru
-    if (!empty($validated['items'])) {
-        foreach ($validated['items'] as $detail) {
-            $item = Item::find($detail['item_id']);
-            if ($item && $item->stock < $detail['quantity']) {
-                return back()->withErrors([
-                    'items' => "Stok barang '{$item->name}' hanya tersedia {$item->stock}, tidak cukup untuk dikurangi {$detail['quantity']}.",
-                ])->withInput();
-            }
-        }
-    }
-
-    // 🗑️ STEP 3: Hapus semua detail lama
-    $itemout->details()->delete();
-
-    // ✏️ STEP 4: Update data utama transaksi
-    $itemout->update([
-        'code' => $validated['code'],
-        'note' => $validated['note'] ?? null,
-        'date' => $validated['date'],
-        'created_by' => $validated['created_by'],
-    ]);
-
-    // ➕ STEP 5: Tambahkan detail baru dan update stok
-    if (!empty($validated['items'])) {
-        foreach ($validated['items'] as $detail) {
-            // Simpan detail transaksi
-            OutgoingTransDetail::create([
-                'outgoing_transaction_id' => $itemout->id,
-                'item_id' => $detail['item_id'],
-                'quantity' => $detail['quantity'],
-                'note' => $detail['note'] ?? null,
-            ]);
-
-            // Kurangi stok sesuai quantity baru
-            $item = Item::find($detail['item_id']);
+        // 🔁 STEP 1: Kembalikan stok lama (ROLLBACK)
+        foreach ($itemout->details as $oldDetail) {
+            $item = Item::find($oldDetail->item_id);
             if ($item) {
-                $item->stock -= $detail['quantity'];
+                $item->stock += $oldDetail->quantity;
                 $item->save();
             }
         }
-    }
 
-    // ✅ SELESAI
-    return redirect()->route('itemout.index')->with('success', 'Transaksi berhasil diperbarui dan stok disesuaikan.');
-}
+        // 🔒 STEP 2: Validasi stok cukup untuk data baru
+        if (!empty($validated['items'])) {
+            foreach ($validated['items'] as $detail) {
+                $item = Item::find($detail['item_id']);
+                if ($item && $item->stock < $detail['quantity']) {
+                    return back()->withErrors([
+                        'items' => "Stok barang '{$item->name}' hanya tersedia {$item->stock}, tidak cukup untuk dikurangi {$detail['quantity']}.",
+                    ])->withInput();
+                }
+            }
+        }
+
+        // 🗑️ STEP 3: Hapus semua detail lama
+        $itemout->details()->delete();
+
+        // ✏️ STEP 4: Update data utama transaksi
+        $itemout->update([
+            'code' => $validated['code'],
+            'note' => $validated['note'] ?? null,
+            'date' => $validated['date'],
+            'created_by' => $validated['created_by'],
+        ]);
+
+        // ➕ STEP 5: Tambahkan detail baru dan update stok
+        if (!empty($validated['items'])) {
+            foreach ($validated['items'] as $detail) {
+                // Simpan detail transaksi
+                OutgoingTransDetail::create([
+                    'outgoing_transaction_id' => $itemout->id,
+                    'item_id' => $detail['item_id'],
+                    'quantity' => $detail['quantity'],
+                    'note' => $detail['note'] ?? null,
+                ]);
+
+                // Kurangi stok sesuai quantity baru
+                $item = Item::find($detail['item_id']);
+                if ($item) {
+                    $item->stock -= $detail['quantity'];
+                    $item->save();
+                }
+            }
+        }
+
+        // ✅ SELESAI
+        return redirect()->route('itemout.index')->with('success', 'Transaksi berhasil diperbarui dan stok disesuaikan.');
+    }
 
 
 
@@ -184,11 +189,11 @@ class OutgoingTransactionController extends Controller
      */
     public function destroy(OutgoingTransaction $itemout)
     {
-         // 🔁 STEP 1: Kembalikan stok ke semula (kurangi stok yang pernah ditambahkan)
+        // 🔁 STEP 1: Kembalikan stok ke semula (kurangi stok yang pernah ditambahkan)
         foreach ($itemout->details as $detail) {
             $item = Item::find($detail->item_id);
             if ($item) {
-                $item->stock = max(0, $item->stock - $detail->quantity); // Hindari nilai minus
+                $item->stock = max(0, $item->stock + $detail->quantity); // Hindari nilai minus
                 $item->save();
             }
         }

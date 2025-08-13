@@ -46,10 +46,10 @@
                         </div>
     
                         <div class="mb-3 col-md-4">
-                            <label for="quantity" class="form-label">Quantity</label>
-                            <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror"
-                                id="quantity" value="{{ old('quantity') }}">
-                            @error('quantity')
+                            <label for="stock" class="form-label">Quantity</label>
+                            <input type="number" name="stock" class="form-control @error('stock') is-invalid @enderror"
+                                id="stock" value="{{ old('stock') }}">
+                            @error('stock')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>

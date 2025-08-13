@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use App\Models\IncomeTransDetail;
 use App\Models\IncomingTransaction;
+use App\Http\Requests\IteminRequest;
 
 class IncomingTransactionController extends Controller
 {
@@ -30,28 +31,32 @@ class IncomingTransactionController extends Controller
             'title' => 'Incoming Transaction',
             'Category' => Category::all(),
             'items' => Item::all(),
+            'incum' => new IncomingTransaction(),
         ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(IteminRequest $request)
     {
         // Validasi input utama
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:incoming_transaction,code',
-            'note' => 'nullable|string|max:255',
-            'date' => 'required|date',
-            'items' => 'required|array|min:1',
-            'created_by' => 'required|string|max:255',
-            'items.*.item_id' => 'required|exists:items,id',
-            // 'items.*.category_id' => 'required|exists:categories,id',
-            'items.*.quantity' => 'required|integer|min:1',
-            'items.*.note' => 'nullable|string|max:255',
-        ]);
+        // $validated = $request->validate([
+        //     'code' => 'required|string|max:255|unique:incoming_transaction,code',
+        //     'note' => 'nullable|string|max:255',
+        //     'date' => 'required|date',
+        //     'items' => 'required|array|min:1',
+        //     'created_by' => 'required|string|max:255',
+        //     'items.*.item_id' => 'required|exists:items,id',
+        //     // 'items.*.category_id' => 'required|exists:categories,id',
+        //     'items.*.quantity' => 'required|integer|min:1',
+        //     'items.*.note' => 'nullable|string|max:255',
+        // ]);
 
         // return $validated;
+
+        $validated = $request->validated();
+
 
         // Simpan transaksi utama
         $transaction = IncomingTransaction::create([
@@ -108,21 +113,22 @@ class IncomingTransactionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, IncomingTransaction $itemin)
+    public function update(IteminRequest $request, IncomingTransaction $itemin)
     {
         // VALIDASI
-        $validated = $request->validate([
-            'code' => 'required|string|max:255|unique:incoming_transaction,code,' . $itemin->id,
-            'note' => 'nullable|string|max:255',
-            'date' => 'required|date',
-            'created_by' => 'required|string|max:255',
-            'items' => 'nullable|array',
-            'items.*.item_id' => 'required_with:items.*|exists:items,id',
-            // 'items.*.category_id' => 'required_with:items.*|exists:categories,id',
-            'items.*.quantity' => 'required_with:items.*|integer|min:1',
-            'items.*.note' => 'nullable|string|max:255',
-        ]);
+        // $validated = $request->validate([
+        //     // 'code' => 'required|string|max:255|unique:incoming_transaction,code,' . $itemin->id,
+        //     // 'note' => 'nullable|string|max:255',
+        //     // 'date' => 'required|date',
+        //     // 'created_by' => 'required|string|max:255',
+        //     // 'items' => 'nullable|array',
+        //     // 'items.*.item_id' => 'required_with:items.*|exists:items,id',
+        //     // // 'items.*.category_id' => 'required_with:items.*|exists:categories,id',
+        //     // 'items.*.quantity' => 'required_with:items.*|integer|min:1',
+        //     // 'items.*.note' => 'nullable|string|max:255',
+        // ]);
 
+        $validated = $request->validated();
 
         // 🔁 STEP 1: Kembalikan stok barang dari detail lama
         foreach ($itemin->details as $oldDetail) {
