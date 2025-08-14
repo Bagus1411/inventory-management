@@ -1,4 +1,6 @@
-<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary">
+<div class="d-flex"></div>
+<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary border-end position-sticky top-0 vh-100 overflow-auto"
+    style="width: 250px;">
     <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
         aria-labelledby="sidebarMenuLabel">
 
@@ -10,6 +12,9 @@
                 aria-label="Close"></button>
         </div>
         <div class="offcanvas-body d-md-flex flex-column p-0 pt-lg-3 overflow-y-auto">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-2 text-muted">
+                <span>Home</span>
+            </h6>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-2 rounded
@@ -48,10 +53,11 @@
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-muted">
                 <span>In & Out</span>
             </h6>
+
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-2 rounded
-                            {{ Request::is('inout/in') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                            {{ Request::is('action/itemin*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
                         href="/action/itemin">
                         <i data-feather="download" class="opacity-75"></i>
                         Item In
@@ -61,7 +67,7 @@
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-2 rounded
-                            {{ Request::is('inout/out') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                            {{ Request::is('action/itemout*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
                         href="/action/itemout">
                         <i data-feather="upload" class="opacity-75"></i>
                         Item Out
@@ -69,7 +75,37 @@
                 </li>
             </ul>
 
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-muted">
+                <span>Administrator</span>
+            </h6>
+
+            <ul class="nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2 rounded
+                            {{ Request::is('profile*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                        href="{{ route('profile.edit') }}">
+                        <i data-feather="user" class="opacity-75"></i>
+                        Profile
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2 rounded
+                            {{ Request::is('user*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                        href="{{ route('user.index') }}">
+                        <i data-feather="users" class="opacity-75"></i>
+                        Users & Add User
+                    </a>
+                </li>
+            </ul>
+
             <hr class="my-3" />
+
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-2 text-muted">
+                <span>GET OUTT!</span>
+            </h6>
 
             <ul class="nav flex-column mb-auto">
                 <li class="nav-item">
