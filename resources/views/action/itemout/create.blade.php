@@ -9,6 +9,18 @@
         <form action="{{ route('itemout.store') }}" method="POST" id="form-create">
             @csrf
 
+            {{-- 🔴 ERROR MESSAGE GLOBAL --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             {{-- HEADER --}}
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-white">
@@ -63,7 +75,7 @@
                             <tbody>
                                 @php
                                     $oldItems = old('items', [['item_id' => '', 'quantity' => '', 'note' => '']]);
-                                @endphp 
+                                @endphp
 
                                 @foreach ($oldItems as $index => $oldItem)
                                     <tr data-index="{{ $index }}">
@@ -127,38 +139,38 @@
 @endsection
 
 @section('scripts')
-<script>
-    let rowIndex = {{ count($oldItems) }};
+    <script>
+        let rowIndex = {{ count($oldItems) }};
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const tableBody = document.querySelector('#detail-table tbody');
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.querySelector('#detail-table tbody');
 
-        // Fungsi untuk aktif/nonaktif tombol delete
-        function toggleDeleteButtons() {
-            const deleteButtons = tableBody.querySelectorAll('.delete-row');
-            if (deleteButtons.length <= 1) {
-                deleteButtons.forEach(btn => {
-                    btn.disabled = true;
-                    btn.classList.add('disabled');
-                    btn.setAttribute('title', 'Minimal 1 item harus ada');
-                });
-            } else {
-                deleteButtons.forEach(btn => {
-                    btn.disabled = false;
-                    btn.classList.remove('disabled');
-                    btn.removeAttribute('title');
-                });
+            // Fungsi untuk aktif/nonaktif tombol delete
+            function toggleDeleteButtons() {
+                const deleteButtons = tableBody.querySelectorAll('.delete-row');
+                if (deleteButtons.length <= 1) {
+                    deleteButtons.forEach(btn => {
+                        btn.disabled = true;
+                        btn.classList.add('disabled');
+                        btn.setAttribute('title', 'Minimal 1 item harus ada');
+                    });
+                } else {
+                    deleteButtons.forEach(btn => {
+                        btn.disabled = false;
+                        btn.classList.remove('disabled');
+                        btn.removeAttribute('title');
+                    });
+                }
             }
-        }
 
-        // Cek saat pertama kali load
-        toggleDeleteButtons();
+            // Cek saat pertama kali load
+            toggleDeleteButtons();
 
-        // Tombol tambah baris
-        document.getElementById('add-row').addEventListener('click', function() {
-            const newRow = document.createElement('tr');
-            newRow.setAttribute('data-index', rowIndex);
-            newRow.innerHTML = `
+            // Tombol tambah baris
+            document.getElementById('add-row').addEventListener('click', function() {
+                const newRow = document.createElement('tr');
+                newRow.setAttribute('data-index', rowIndex);
+                newRow.innerHTML = `
                 <td>
                     <select name="items[${rowIndex}][item_id]" class="form-control" required>
                         <option value="" selected hidden disabled>Select Item</option>
@@ -175,21 +187,20 @@
                     </button>
                 </td>
             `;
-            tableBody.appendChild(newRow);
-            feather.replace();
-            rowIndex++;
-            toggleDeleteButtons();
-        });
-
-        // Tombol hapus baris
-        tableBody.addEventListener('click', function(e) {
-            if (e.target.closest('.delete-row')) {
-                const row = e.target.closest('tr');
-                row.remove();
+                tableBody.appendChild(newRow);
+                feather.replace();
+                rowIndex++;
                 toggleDeleteButtons();
-            }
-        });
-    });
-</script>
-@endsection
+            });
 
+            // Tombol hapus baris
+            tableBody.addEventListener('click', function(e) {
+                if (e.target.closest('.delete-row')) {
+                    const row = e.target.closest('tr');
+                    row.remove();
+                    toggleDeleteButtons();
+                }
+            });
+        });
+    </script>
+@endsection

@@ -8,10 +8,22 @@
         </div>
 
         {{-- 🔹 FORM HEADER --}}
-        {{-- 🔹 FORM HEADER --}}
         <form id="form-detail" class="mt-4" action="{{ route('itemout.update', $outgoing->id) }}" method="POST">
             @csrf
             @method('PUT')
+
+            {{-- 🔴 ERROR MESSAGE GLOBAL --}}
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
             <div class="card shadow-sm">
                 <div class="card-header bg-white">
                     <h5 class="mb-0">General Information</h5>
@@ -88,8 +100,7 @@
                                         <td>
                                             <input type="number" name="items[{{ $index }}][quantity]"
                                                 class="form-control @error("items.$index.quantity") is-invalid @enderror"
-                                                value="{{ $detail->quantity }}"
-                                                required>
+                                                value="{{ $detail->quantity }}" required>
                                             @error("items.$index.quantity")
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror

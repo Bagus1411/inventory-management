@@ -32,7 +32,7 @@
                                 Edit Category
                             </button>
                         </div>
-                        
+
                 </form>
 
                 <form action="{{ route('category.destroy', $category->id) }}" method="POST" class="d-inline">

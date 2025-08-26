@@ -1,5 +1,5 @@
 <div class="d-flex"></div>
-<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary border-end position-sticky top-0 vh-100 overflow-auto"
+<div class="sidebar border border-right col-md-3 col-lg-2 p-0 bg-body-tertiary border-end overflow-auto"
     style="width: 250px;">
     <div class="offcanvas-md offcanvas-end bg-body-tertiary" tabindex="-1" id="sidebarMenu"
         aria-labelledby="sidebarMenuLabel">
@@ -26,7 +26,7 @@
                 </li>
             </ul>
 
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-muted">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-3 mb-2 text-muted">
                 <span>Master</span>
             </h6>
             <ul class="nav flex-column">
@@ -50,7 +50,7 @@
                 </li>
             </ul>
 
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-muted">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-3 mb-2 text-muted">
                 <span>In & Out</span>
             </h6>
 
@@ -75,7 +75,35 @@
                 </li>
             </ul>
 
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-2 text-muted">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-3 mb-2 text-muted">
+                <span>Sales</span>
+            </h6>
+
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2 rounded
+                            {{ Request::is('sales*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                        href="{{ route('sales.index') }}">
+                        <i data-feather="shopping-cart" class="me-2"></i>
+                        Sales
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center gap-2 rounded
+                            {{ Request::is('customer*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                        href="{{ route('customer.index') }}">
+                        <i data-feather="user-check" class="opacity-75"></i>
+                        Customer
+                    </a>
+                </li>
+            </ul>
+
+            <hr class="my-3" />
+
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-1 mb-2 text-muted">
                 <span>Administrator</span>
             </h6>
 
@@ -93,7 +121,7 @@
             <ul class="nav flex-column mb-auto">
                 <li class="nav-item">
                     <a class="nav-link d-flex align-items-center gap-2 rounded
-                            {{ Request::is('user*') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
+                            {{ Request::is('user') ? 'bg-secondary-subtle text-dark fw-semibold' : 'text-secondary' }}"
                         href="{{ route('user.index') }}">
                         <i data-feather="users" class="opacity-75"></i>
                         Users & Add User

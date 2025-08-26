@@ -54,6 +54,16 @@ class OutgoingTransactionController extends Controller
         $validated = $request->validated();
 
         // return $validated;
+        // 🔒 VALIDASI: cek semua stok sebelum simpan
+        foreach ($validated['items'] as $detail) {
+            $item = Item::find($detail['item_id']);
+            if ($item && $item->stock < $detail['quantity']) {
+                return back()->withErrors([
+                    'items' => "Stok '{$item->name}' hanya tersedia {$item->stock}, 
+                           tidak cukup untuk dikurangi {$detail['quantity']}."
+                ])->withInput();
+            }
+        }
 
         // Simpan transaksi utama
         $transaction = OutgoingTransaction::create([
@@ -105,7 +115,7 @@ class OutgoingTransactionController extends Controller
             'items' => Item::all(),
             'categories' => Category::all(),
         ]);
-    }   
+    }
 
     /**
      * Update the specified resource in storage.
@@ -125,6 +135,18 @@ class OutgoingTransactionController extends Controller
         // ]);
 
         $validated = $request->validated();
+
+        // 🔒 VALIDASI: cek semua stok sebelum simpan
+        foreach ($validated['items'] as $detail) {
+            $item = Item::find($detail['item_id']);
+            if ($item && $item->stock < $detail['quantity']) {
+                return back()->withErrors([
+                    'items' => "Stok '{$item->name}' hanya tersedia {$item->stock}, 
+                           tidak cukup untuk dikurangi {$detail['quantity']}."
+                ])->withInput();
+            }
+        }
+
 
         // 🔁 STEP 1: Kembalikan stok lama (ROLLBACK)
         foreach ($itemout->details as $oldDetail) {
